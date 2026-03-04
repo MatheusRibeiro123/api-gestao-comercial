@@ -1,9 +1,6 @@
-from flask import Blueprint , jsonify
+from app import app
+from flask import jsonify
 
-main = Blueprint("main" , __name__)
-
-@main.route("/health" , methods= ["GET"])
-
-def health():
-
-    return jsonify({"status":"API Funcionando"})
+@app.route("/")
+def home():
+    return jsonify({"mensagem": "API funcionando!"})
