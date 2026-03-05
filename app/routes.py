@@ -1,6 +1,7 @@
-from app import app
-from flask import jsonify
+from flask import Blueprint
 
-@app.route("/")
+main = Blueprint("main" , __name__)
+
+@main.route("/", methods = ["GET"])
 def home():
-    return jsonify({"mensagem": "API funcionando!"})
+    return "API Funcionando!"
