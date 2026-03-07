@@ -17,8 +17,8 @@ class Produto:
 
      def to_dict(self):
          return{"id":self.id,
-                "nome":self.id,
-                 "preço":self.preco}
+                "nome":self.nome,
+                 "preco":self.preco}
                    
 class Venda:
     def __init__(self, id, id_cliente, id_produto, quantidade):
