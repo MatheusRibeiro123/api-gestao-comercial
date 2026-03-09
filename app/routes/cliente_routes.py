@@ -1,15 +1,9 @@
-from flask import Blueprint, jsonify, request
+from flask import jsonify, request
+from app.routes.bp_main import main
 
-main = Blueprint("main" , __name__)
 
-@main.route("/", methods = ["GET"])
-def home():
-    return "API Funcionando!"
-
-#listas temporarias para armezenar dados até a criação do BD
+#lista temporaria para armezenar dados até a criação do BD
 clientes = []
-produtos = []
-vendas = []
 
 
 #============================ ROTAS DE CLIENTES ============================
@@ -51,11 +45,11 @@ def atualizar_cliente(id):
     return jsonify({"erro": "Cliente não encontrado"})
 
     
-    #deletar cliente
+#deletar cliente
 @main.route("/clientes/<int:id>" ,methods = ["DELETE"])
 def deletar_cliente(id):
     for cliente in clientes:
         if cliente["id"] == id:
             clientes.remove(cliente)
             return jsonify({"mensagem":"Cliente removido"})
-    return jsonify[{"erro":"Cliente não encontrado"}]
+    return jsonify({"erro":"Cliente não encontrado"})
