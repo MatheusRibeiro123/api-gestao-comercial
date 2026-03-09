@@ -5,7 +5,8 @@ class Cliente:
         self.telefone = telefone
     
     def to_dict(self):
-        return {"id" : self.id ,
+        return {
+            "id" : self.id ,
                 "nome" : self.nome,
                 "telefone":self.telefone} 
     
@@ -16,7 +17,8 @@ class Produto:
         self.preco=preco
 
      def to_dict(self):
-         return{"id":self.id,
+         return{
+             "id":self.id,
                 "nome":self.nome,
                  "preco":self.preco}
                    
@@ -28,7 +30,8 @@ class Venda:
         self.quantidade=quantidade
 
     def to_dict(self):
-            return{"id":self.id ,
+            return{
+                "id":self.id ,
                    "id_cliente":self.id_cliente,
                    "id_produto":self.id_produto,
                    "quantidade":self.quantidade}
