@@ -14,7 +14,7 @@ def criar_produto():
     produtos.append(produto)
     return jsonify(produto), 201
 
-#listar produto
+#listar produtos
 @main.route("/produtos", methods = ["GET"])
 def listar_produtos():
     return jsonify(produtos)
