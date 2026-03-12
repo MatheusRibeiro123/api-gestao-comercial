@@ -1,9 +1,7 @@
 from flask import jsonify, request
 from app.routes.bp_main import main
-
-
-#lista temporaria para armezenar dados até a criação do BD
-clientes = []
+from app.models.cliente import Cliente
+from app.database import db
 
 
 #============================ ROTAS DE CLIENTES ============================
@@ -11,45 +9,67 @@ clientes = []
 #criar novo cliente
 @main.route("/clientes",methods = ["POST"])
 def criar_cliente():
-    cliente = request.json
-    clientes.append(cliente)
-    return jsonify(cliente)
+   
+   dados = request.json
+   cliente = Cliente(
+      nome = dados["nome"],
+      telefone = dados["telefone"]
+   )
 
+   db.session.add(cliente)
+   db.session.commit()
+
+   return jsonify(cliente.to_dict()), 201
 
 #listar clientes
 @main.route("/clientes", methods = ["GET"])
 def listar_clientes():
-    return jsonify(clientes)
+    
+    clientes = Cliente.query.all()
+
+    lista_clientes = [cliente.to_dict() for cliente in clientes]
+
+    return jsonify(lista_clientes)
 
 
 #listar apenas um cliente
 @main.route("/clientes/<int:id>",methods = ["GET"])
 def buscar_cliente(id):
-    for cliente in clientes:
-        if cliente["id"] == id:
-            return jsonify(cliente)
-        
-    return jsonify({"erro": "Cliente não encontrado"})
+    cliente = Cliente.query.get(id)
+
+    if cliente:
+        return jsonify(cliente.to_dict())
+    
+    return jsonify({"erro": "Cliente não encontrado"}), 404
 
 
 #atualizar cliente
 @main.route("/clientes/<int:id>",methods = ["PUT"])
 def atualizar_cliente(id):
+    cliente = Cliente.query.get(id)
+
+    if not cliente:
+        return jsonify({"erro": "Cliente não encontrado"}), 404
+    
     dados = request.json
 
-    for cliente in clientes:
-        if cliente["id"] == id:
-            cliente.update(dados)
-            return jsonify(cliente)
-        
-    return jsonify({"erro": "Cliente não encontrado"})
+    cliente.nome = dados["nome"]
+    cliente.telefone = dados["telefone"]
 
-    
-#deletar cliente
+    db.session.commit()    
+
+    return jsonify(cliente.to_dict())
+
+        
+    #deletar cliente
 @main.route("/clientes/<int:id>" ,methods = ["DELETE"])
 def deletar_cliente(id):
-    for cliente in clientes:
-        if cliente["id"] == id:
-            clientes.remove(cliente)
-            return jsonify({"mensagem":"Cliente removido"})
-    return jsonify({"erro":"Cliente não encontrado"})
+    cliente = Cliente.query.get(id)
+
+    if not cliente:
+        return jsonify ({"erro":"Cliente não encontrado"}), 404
+    
+    db.session.delete(cliente)
+    db.session.commit()
+
+    return jsonify({"mensagem": "Cliente removido"})
