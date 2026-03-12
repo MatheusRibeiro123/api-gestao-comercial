@@ -1,55 +1,75 @@
 from flask import jsonify, request
 from app.routes.bp_main import main
-
-#lista temporaria para armezenar dados até a criação do BD
-produtos = []
-
-
+from app.database import db
+from app.models import Produto
 #============================ ROTAS DE PRODUTOS ============================
 
 #criar produto
 @main.route("/produtos", methods = ["POST"])
 def criar_produto():
-    produto = request.json
-    produtos.append(produto)
-    return jsonify(produto), 201
+    
+    dados = request.json
+    
+    produto = Produto(
+        nome = dados["nome"],
+        preco = dados["preco"],
+        estoque = dados["estoque"]
+    )
+
+    db.session.add(produto)
+    db.session.commit()
+
+    return jsonify (produto.to_dict()), 201
+
 
 #listar produtos
 @main.route("/produtos", methods = ["GET"])
 def listar_produtos():
-    return jsonify(produtos)
+    produtos = Produto.query.all()
 
+    return jsonify([produto.to_dict() for produto in produtos])
+
+    
 #listar produto por id
 @main.route("/produtos/<int:id>", methods = ["GET"])
 def listar_produto(id):
-    for produto in produtos:
-        if produto["id"] == id:
-            return jsonify(produto)
+    produto = Produto.query.get(id)
+
+    if produto:
+        return jsonify(produto.to_dict())
     
-    return jsonify [{"erro":"produto não encontrado"}]
+    return jsonify({"erro":"Produto não encontrado"}),404
 
 #alterar produto
 @main.route("/produtos/<int:id>", methods = ["PUT"])
 def atualizar_produto(id):
-    dados = request.json
-    for produto in produtos:
-        if produto["id"] ==id:
-            produto["nome"] = dados.get("nome",produto["nome"])
-            produto["preco"] = dados.get("preco",produto["preco"])
+   produto = Produto.query.get(id)
 
-            return jsonify(produto)
-        
-    return jsonify({"erro": "Produto não encontrado"}), 404
+   if not produto:
+       return jsonify({"erro": "Produto não encontrado"}), 404
+   
+   dados= request.json
+
+   produto.nome = dados.get("nome", produto.nome)
+   produto.preco = dados.get("preco", produto.preco)
+   produto.estoque = dados.get("estoque", produto.estoque)
+
+   db.session.commit()
+
+   return jsonify(produto.to_dict())
 
 #deletar produto
 @main.route("/produtos/<int:id>", methods = ["DELETE"])
 def deletar_produto(id):
-    for produto in produtos:
-        if produto["id"] == id:
-            produtos.remove(produto)
-            return jsonify({"mensagem": "Produto deletado com sucesso"})
+    produto = Produto.query.get(id)
 
-    return jsonify({"erro": "Produto não encontrado"}), 404
+    if not produto:
+        return jsonify ({"erro":"Produto não encontrado"}), 404
+    
+    db.session.delete(produto)
+    db.session.commit()
+
+    return jsonify({"mensagem":"Produto deletado com sucesso"})
 
 
 
