@@ -16,5 +16,8 @@ def create_app():
     from app.routes import venda_routes
 
     app.register_blueprint(main)
-                           
+
+    with app.app_context():
+        db.create_all()                       
+    
     return app
