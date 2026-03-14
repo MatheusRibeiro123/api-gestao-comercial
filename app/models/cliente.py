@@ -6,6 +6,7 @@ class Cliente(db.Model):
     nome = db.Column(db.String(100), nullable=False)
     telefone = db.Column(db.String(20))
     
+    
     def to_dict(self):
         return {
             "id" : self.id ,
