@@ -1,7 +1,7 @@
 from flask import jsonify, request
 from app.routes.bp_main import main
 from app.database import db
-from app.models import Produto
+from app.models.produto import Produto
 #============================ ROTAS DE PRODUTOS ============================
 
 #criar produto

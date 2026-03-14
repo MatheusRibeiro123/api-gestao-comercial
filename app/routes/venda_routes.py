@@ -1,53 +1,73 @@
 from flask import jsonify, request
 from app.routes.bp_main import main
-
-#lista temporaria para armezenar dados até a criação do BD
-vendas = []
-
+from app.database import db
+from app.models.venda import Venda
 #============================ ROTAS DE VENDAS ============================
 
 #criar venda
 @main.route("/vendas", methods = ["POST"])
 def criar_venda():
-    venda = request.json
-    vendas.append(venda)
-    return jsonify(venda), 201
+    
+    dados = request.json
+
+    venda = Venda(
+        id_cliente=dados["id_cliente"],
+        id_produto=dados["id_produto"],
+        quantidade=dados["quantidade"]
+    )
+
+    db.session.add(venda)
+    db.session.commit()
+
+    return jsonify(venda.to_dict()), 201
 
 #listar vendas 
 @main.route("/vendas", methods = ["GET"])
 def listar_vendas():
-    return jsonify(vendas)
+    
+    vendas = Venda.query.all()
+
+    return jsonify([venda.to_dict() for venda in vendas])
 
 #listar venda por id
 @main.route("/vendas/<int:id>",methods = ["GET"])
 def listar_venda(id):
-    for venda in vendas:
-        if venda["id"] == id:
-            return jsonify(venda)
+    venda = Venda.query.get(id)
+
+    if not venda:
+        return jsonify({"erro":"Venda não encontrada"}),404
         
-    return jsonify ({"erro":"Venda não encontrada"}) , 404
+    return jsonify(venda.to_dict())
 
 #atualizar venda
 @main.route("/vendas/<int:id>", methods = ["PUT"])
 def atualizar_venda(id):
 
-    dados = request.json
-    for venda in vendas:
-        if venda["id"] == id:
-            venda["id_cliente"] = dados.get("id_cliente", venda["id_cliente"])
-            venda["id_produto"] = dados.get("id_produto", venda["id_produto"])
-            venda["quantidade"] = dados.get("quantidade", venda["quantidade"])
+    venda = Venda.query.get(id)
 
-            return jsonify(venda)
-       
-    return jsonify({"erro": "Venda não encontrada"}), 404
+    if not venda:
+        return jsonify({"erro":"Venda não encontrada"}),404
+    
+    dados = request.json
+
+    venda.id_cliente = dados.get("id_cliente",venda.id_cliente)
+    venda.id_produto = dados.get("id_produto",venda.id_produto)
+    venda.quantidade = dados.get("quantidade",venda.quantidade)
+
+    db.session.commit()
+
+    return jsonify({"mensagem": "Venda atualizada com sucesso"})
+    
 
 #deletar venda
 @main.route("/vendas/<int:id>", methods = ["DELETE"])
 def deletar_venda(id):
-    for venda in vendas:
-        if venda["id"] == id:
-            vendas.remove(venda)
-            return jsonify({"mensagem": "Venda deletada com sucesso"})
+    venda = Venda.query.get(id)
 
-    return jsonify({"erro": "Venda não encontrada"}), 404   
+    if not venda:
+        return jsonify({"erro":"Venda não encontrada"}),404
+    
+    db.session.delete(venda)
+    db.session.commit()
+
+    return jsonify({"mensagem": "Venda deletada com sucesso"})

@@ -53,8 +53,8 @@ def atualizar_cliente(id):
     
     dados = request.json
 
-    cliente.nome = dados["nome"]
-    cliente.telefone = dados["telefone"]
+    cliente.nome = dados.get("nome",cliente.nome)
+    cliente.telefone = dados.get("telefone",cliente.telefone)
 
     db.session.commit()    
 
