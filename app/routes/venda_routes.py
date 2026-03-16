@@ -12,9 +12,7 @@ def criar_venda():
 
     venda = Venda(
         id_cliente=dados["id_cliente"],
-        id_produto=dados["id_produto"],
-        quantidade=dados["quantidade"]
-    )
+         )
 
     db.session.add(venda)
     db.session.commit()
@@ -51,9 +49,7 @@ def atualizar_venda(id):
     dados = request.json
 
     venda.id_cliente = dados.get("id_cliente",venda.id_cliente)
-    venda.id_produto = dados.get("id_produto",venda.id_produto)
-    venda.quantidade = dados.get("quantidade",venda.quantidade)
-
+ 
     db.session.commit()
 
     return jsonify({"mensagem": "Venda atualizada com sucesso"})
