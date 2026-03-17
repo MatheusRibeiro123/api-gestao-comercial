@@ -1,7 +1,7 @@
 from flask import request, jsonify
 from app.routes.bp_main import main
 from app.database import db
-from app.models import ItemVenda
+from app.models.ItemVenda import ItemVenda
 
 #--------------rotas da classe ItemVenda------------
 
@@ -18,16 +18,18 @@ def criar_item_venda():
     db.session.add(item)
     db.session.commit()
 
-#listar todos os itens venda
+    return jsonify(item.to_dict()), 201
+
+#buscar todos os itens venda
 @main.route("/itens-venda", methods = ["GET"])
-def listar_itens_venda():
+def buscar_itens_venda():
     itens = ItemVenda.query.all()
 
     return jsonify([item.to_dict() for item in itens])
 
 #buscar item-venda especifico
 @main.route("/itens-venda/<int:id>", methods = ["GET"])
-def listar_item_venda(id):
+def buscar_item_venda(id):
     item = ItemVenda.query.get_or_404(id)
 
     return jsonify(item.to_dict())

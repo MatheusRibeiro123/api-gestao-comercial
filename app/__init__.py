@@ -14,7 +14,7 @@ def create_app():
     from app.routes import cliente_routes
     from app.routes import produto_routes
     from app.routes import venda_routes
-
+    from app.routes import ItemVenda_routes
     app.register_blueprint(main)
 
     with app.app_context():
