@@ -13,10 +13,12 @@ class Venda(db.Model):
                 "id":self.id ,
                    "id_cliente":self.id_cliente,
                    "cliente":self.cliente.nome if self.cliente else None,
-                   "itens":[item.to_dict() for item in self.itens]
+                   "itens":[item.to_dict() for item in self.itens],
+                   "total":self.calcular_total()
                    }
         
-        
+    def calcular_total(self):
+          return sum(item.quantidade * item.preco_unitario for item in self.itens)
 
             
     

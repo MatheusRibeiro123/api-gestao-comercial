@@ -2,17 +2,16 @@
 
 ## 📌 Sobre o projeto
 
-Este projeto consiste no desenvolvimento de uma **API de gestão comercial**, criada com o objetivo de **praticar conceitos de desenvolvimento backend** e aprimorar minhas habilidades em programação.
+Esta é uma **API REST de gestão comercial**, desenvolvida com o objetivo de simular um sistema real de controle de vendas.
 
-A API está sendo desenvolvida **durante meu tempo livre de estudos**, como parte do meu processo de aprendizado na área de tecnologia da informação.
+A aplicação permite o gerenciamento de:
 
-O foco principal deste projeto é praticar conceitos como:
+* Clientes
+* Produtos
+* Vendas
+* Itens de venda
 
-* Estruturação de projetos backend
-* Criação de APIs
-* Organização de rotas
-* Modelagem de dados
-* Boas práticas de desenvolvimento
+Durante o desenvolvimento, foram aplicados conceitos fundamentais de backend, como **relacionamento entre entidades**, **estruturação de API REST** e **lógica de negócio**, incluindo o cálculo automático do valor total das vendas.
 
 ---
 
@@ -20,28 +19,72 @@ O foco principal deste projeto é praticar conceitos como:
 
 * Python
 * Flask
+* SQLAlchemy
+* SQLite
 * JSON
 
 ---
 
-## 📚 Objetivo do projeto
+## ⚙️ Funcionalidades
 
-Este projeto não possui finalidade comercial.
-Ele está sendo desenvolvido como **projeto de estudo**, com o objetivo de evoluir minhas habilidades em desenvolvimento backend e compreender melhor como APIs são estruturadas em projetos reais.
-
-Durante o desenvolvimento, novos recursos e melhorias poderão ser adicionados conforme avanço nos estudos.
+* CRUD completo de clientes
+* CRUD completo de produtos
+* Registro de vendas com múltiplos itens
+* Relacionamento entre vendas e produtos
+* Cálculo automático do valor total da venda
+* Retorno estruturado em JSON
 
 ---
 
-## 🛠 Estrutura inicial do projeto
+## 🧠 Regras de negócio implementadas
+
+* Uma venda pode conter vários itens
+* Um produto pode estar presente em várias vendas
+* O valor total da venda é calculado dinamicamente com base nos itens
+* Cada item de venda armazena o preço unitário no momento da venda
+
+---
+
+## 📡 Exemplo de resposta da API
+
+```json
+{
+  "cliente": "João Silva",
+  "id": 1,
+  "id_cliente": 1,
+  "itens": [
+    {
+      "id": 1,
+      "id_produto": 1,
+      "produto": "Mouse Gamer",
+      "quantidade": 2,
+      "preco_unitario": 35.0
+    },
+    {
+      "id": 2,
+      "id_produto": 2,
+      "produto": "Teclado Mecânico",
+      "quantidade": 1,
+      "preco_unitario": 30.0
+    }
+  ],
+  "total": 100.0
+}
+```
+
+---
+
+## 🛠 Estrutura do projeto
 
 ```
 api-gestao-comercial
 │
 ├── app
 │   ├── __init__.py
-│   ├── routes.py
+│   ├── database.py
 │   ├── models.py
+│   ├── routes
+│   │   └── bp_main.py
 │
 ├── run.py
 └── README.md
@@ -49,18 +92,47 @@ api-gestao-comercial
 
 ---
 
-## 📈 Futuras implementações
+## ▶️ Como executar o projeto
 
-Algumas funcionalidades que poderão ser implementadas ao longo do desenvolvimento:
+1. Clone o repositório:
 
-* Cadastro de clientes
-* Cadastro de produtos
-* Registro de vendas
-* Integração com banco de dados
-* Melhor organização das rotas e models
+```
+git clone https://github.com/MatheusRibeiro123/api-gestao-comercial.git
+```
+
+2. Acesse a pasta:
+
+```
+cd api-gestao-comercial
+```
+
+3. Crie e ative um ambiente virtual:
+
+```
+python -m venv venv
+venv\Scripts\activate
+```
+
+4. Instale as dependências:
+
+```
+pip install -r requirements.txt
+```
+
+5. Execute a aplicação:
+
+```
+python run.py
+```
+
+---
+
+## 📚 Objetivo
+
+Este projeto foi desenvolvido com foco em **aprendizado prático de desenvolvimento backend**, simulando um cenário próximo ao de sistemas comerciais reais.
 
 ---
 
 ## 👨‍💻 Autor
 
-Projeto desenvolvido por **Matheus Ribeiro** como parte dos estudos em **Tecnologia da Informação e desenvolvimento backend**.
+Desenvolvido por **Matheus Ribeiro**, estudante de Tecnologia da Informação.

@@ -23,6 +23,7 @@ def criar_venda():
 @main.route("/vendas", methods = ["GET"])
 def listar_vendas():
     
+    
     vendas = Venda.query.all()
 
     return jsonify([venda.to_dict() for venda in vendas])
